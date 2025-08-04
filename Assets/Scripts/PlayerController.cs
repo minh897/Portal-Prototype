@@ -6,6 +6,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float rotateSpeed = 5f;
     [SerializeField] private float mouseSens = 10f;
 
+    private bool isInputActive = false;
     private float mouseVerticalInput;
     private float mouseHorizontalInput;
     private Camera playerCam;
@@ -22,23 +23,13 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        CheckOnWindowFocus();
         HandleMouseLook();
     }
 
     void FixedUpdate()
     {
-        
         HandlePlayerMovement();
-    }
-
-    void OnApplicationFocus(bool focus)
-    {
-        Cursor.lockState = CursorLockMode.Locked;
-    }
-
-    void OnApplicationPause(bool pause)
-    {
-        Cursor.lockState = CursorLockMode.None;
     }
 
     private Vector3 GetMoveInput()
@@ -63,8 +54,26 @@ public class PlayerController : MonoBehaviour
         return input;
     }
 
+    private void CheckOnWindowFocus()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            isInputActive = false;
+            Cursor.lockState = CursorLockMode.None;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            isInputActive = true;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+    }
+
     private void HandleMouseLook()
     {
+        if (isInputActive == false)
+            return;
+
         // Horizontal rotation (rotate the player body)
         mouseHorizontalInput = GetMouseHorizontalInput() * rotateSpeed;
         transform.Rotate(0f, mouseHorizontalInput, 0f, Space.Self);
@@ -79,6 +88,9 @@ public class PlayerController : MonoBehaviour
 
     private void HandlePlayerMovement()
     {
+        if (isInputActive == false)
+            return;
+
         // Ensure the moving direction is relative to the player's orientation
         // e.g. if the player rotate 90 degrees, the moving direction will follows
         Vector3 targetPosition = transform.TransformDirection(GetMoveInput());

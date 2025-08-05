@@ -1,3 +1,4 @@
+using System.ComponentModel.Design;
 using UnityEngine;
 
 public class PortalController : MonoBehaviour
@@ -32,7 +33,13 @@ public class PortalController : MonoBehaviour
 
     void Update()
     {
+        isWithinThreshold = CheckForPortalCrossing();
 
+        if (isWithinThreshold)
+        {
+            Debug.Log("Teleported!");
+            TeleportObject(playerController.transform);
+        }
     }
 
     void LateUpdate()
@@ -59,29 +66,43 @@ public class PortalController : MonoBehaviour
 
     #region PRIVATE METHODS
 
+    // Teleport object to the other portal
+    private void TeleportObject(Transform objectToTeleport)
+    {
+        MirrorTransformThroughPortal(objectToTeleport, out Vector3 mirrorPos, out Quaternion mirrorRot);
+
+        // Update the new position and rotation to teleported object
+        objectToTeleport.SetPositionAndRotation(
+            outTransform.TransformPoint(mirrorPos),
+            outTransform.rotation * mirrorRot);
+
+        // Optional: For fail-safe or debugging, reset flag for the next portal crossing check
+        isWithinThreshold = false;
+    }
+
     // Update portal camera to mirror the player's view through the portal
     private void UpdateCameraView()
     {
-        ApplyMirroredViewThroughPortal(outCamera.transform);
+        MirrorTransformThroughPortal(playerCam.transform, out Vector3 mirrorPos, out Quaternion mirrorRot);
+
+        // Update the new position and rotation to out portal camera
+        outCamera.transform.SetPositionAndRotation(
+            outTransform.TransformPoint(mirrorPos),
+            outTransform.rotation * mirrorRot);
     }
 
     // Mirrors object position and rotation through the portal relative to the player's camera
-    private void ApplyMirroredViewThroughPortal(Transform objectTransform)
+    private void MirrorTransformThroughPortal(Transform relativeObject, out Vector3 mirrorPos, out Quaternion mirrorRot)
     {
-        // Convert the player camera’s rotation from world space into inTransform's local space
-        // then flip the portal camera 180 degrees around the Y axis
-        Quaternion relativeRot = Quaternion.Inverse(inTransform.rotation) * playerCam.transform.rotation;
-        Quaternion mirrorRot = Quaternion.AngleAxis(180f, Vector3.up) * relativeRot;
-
         // Convert the player camera's position from world space into inTransform's local space
         // then reverse the X and Z directions 
-        Vector3 relativePos = inTransform.InverseTransformPoint(playerCam.transform.position);
-        Vector3 mirrorPos = new(-relativePos.x, relativePos.y, -relativePos.z);
+        Vector3 relativePos = inTransform.InverseTransformPoint(relativeObject.position);
+        mirrorPos = new(-relativePos.x, relativePos.y, -relativePos.z);
 
-        // Apply new mirror position and rotation to out portal camera
-        objectTransform.SetPositionAndRotation(
-            outTransform.TransformPoint(mirrorPos),
-            outTransform.rotation * mirrorRot);
+        // Convert the player camera’s rotation from world space into inTransform's local space
+        // then flip the portal camera 180 degrees around the Y axis
+        Quaternion relativeRot = Quaternion.Inverse(inTransform.rotation) * relativeObject.rotation;
+        mirrorRot = Quaternion.AngleAxis(180f, Vector3.up) * relativeRot;
     }
 
     // Handle drawing a new near-clip plane using oblique projection matrix
@@ -107,17 +128,17 @@ public class PortalController : MonoBehaviour
     }
 
     // Check if the player is within the portal threshold for teleportation
-    private bool IsWithinPortalThreshold()
+    private bool CheckForPortalCrossing()
     {
         // Track the current and previous player position relative to inTransform in world space
-        Vector3 posToCurrent = playerController.GetCurrentPos() - inTransform.position;
+        Vector3 posToCurrent = playerCam.transform.position - inTransform.position;
         Vector3 posToPrevious = playerController.GetPreviousPos() - inTransform.position;
 
         // Calculate the player's distance along the normalized portal surface threshold
-        currentFrontDst = Vector3.Dot(inTransform.forward.normalized, posToCurrent);
-        previousFrontDst = Vector3.Dot(inTransform.forward.normalized, posToPrevious);
-        sideDst = Vector3.Dot(inTransform.right.normalized, posToCurrent);
-        heightDst = Vector3.Dot(inTransform.up.normalized, posToCurrent);
+        currentFrontDst = Vector3.Dot(inTransform.forward, posToCurrent);
+        previousFrontDst = Vector3.Dot(inTransform.forward, posToPrevious);
+        sideDst = Vector3.Dot(inTransform.right, posToCurrent);
+        heightDst = Vector3.Dot(inTransform.up, posToCurrent);
 
         // Return true if the player is within the distance threshold
         if (currentFrontDst < depthThreshold

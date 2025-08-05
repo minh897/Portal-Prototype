@@ -11,8 +11,8 @@ public class PlayerController : MonoBehaviour
     private float mouseHorizontalInput;
     private Camera playerCam;
     private Rigidbody rb;
-    private Vector3 currentPos;
-    private Vector3 previousPos;
+    private Vector3 currentPosition;
+    private Vector3 previousPosition;
 
     private const float maxVerticalAngle = 90f;
     private const float minVerticalAngle = -90f;
@@ -25,8 +25,8 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        currentPos = playerCam.transform.position;
-        previousPos = currentPos;
+        currentPosition = playerCam.transform.position;
+        previousPosition = currentPosition;
     }
 
     void Update()
@@ -42,9 +42,7 @@ public class PlayerController : MonoBehaviour
 
     #region PUBLIC METHODS
 
-    public Vector3 GetCurrentPos() => currentPos;
-
-    public Vector3 GetPreviousPos() => previousPos;
+    public Vector3 GetPreviousPos() => previousPosition;
 
     #endregion
 
@@ -109,11 +107,11 @@ public class PlayerController : MonoBehaviour
 
         // Ensure the moving direction is relative to the player's orientation
         // e.g. if the player rotate 90 degrees, the moving direction will follows
-        Vector3 targetPosition = transform.TransformDirection(GetMoveInput());
-        rb.MovePosition(transform.position + moveSpeed * Time.fixedDeltaTime * targetPosition);
+        Vector3 targetPosition = transform.TransformDirection(GetMoveInput()) * moveSpeed;
+        rb.MovePosition(transform.position + targetPosition * Time.fixedDeltaTime);
 
         // Update player camera current position in world space
-        previousPos = currentPos;
-        currentPos = playerCam.transform.position;
+        previousPosition = currentPosition;
+        currentPosition = playerCam.transform.position;
     }
 }

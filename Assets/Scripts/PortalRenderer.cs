@@ -20,6 +20,18 @@ public class PortalRenderer : MonoBehaviour
     void LateUpdate()
     {
         HandleCameraPosition();
+        HandleCameraClipping();
+    }
+
+    // Check if the player is near the portal surface
+    private bool IsNearPortal()
+    {
+        // Track the current player position relative to inTransform in world space
+        // Then calculate the player's distance along the normalized forward direction
+        // Return true if the player is in front within the distance threshold
+        Vector3 portalToPlayer = playerCam.transform.position - inTransform.position;
+        float frontDistance = Vector3.Dot(inTransform.forward.normalized, portalToPlayer);
+        return frontDistance >= -0.2f && frontDistance < 0.2f;
     }
 
     // Handle portal camera position and rotation, mirroring the player camera movement
@@ -39,5 +51,27 @@ public class PortalRenderer : MonoBehaviour
         relativeRot = mirrorRot * relativeRot;
 
         outCamera.transform.SetPositionAndRotation(outTransform.TransformPoint(mirrorPos), outTransform.rotation * relativeRot);
+    }
+
+    // Handle drawing a new near-clip plane using oblique projection matrix
+    private void HandleCameraClipping()
+    {
+        if (IsNearPortal())
+        {
+            outCamera.ResetProjectionMatrix();
+            return;
+        }
+
+        // Build a clip plane in world space (normalized forward vector for safety)
+        // with a constant d so the plane passes through outTransform.position
+        Vector3 normal = outTransform.forward.normalized;
+        float d = Vector3.Dot(outTransform.position, outTransform.forward.normalized);
+        Vector4 clipPlaneWorldSpace = new(normal.x, normal.y, normal.z, -d);
+
+        // Transform the plane into camera space
+        Vector4 planeToCameraSpace = outCamera.cameraToWorldMatrix.transpose * clipPlaneWorldSpace;
+
+        // Update the projection matrix based on the new near-clip plane from the player camera perspective
+        outCamera.projectionMatrix = playerCam.CalculateObliqueMatrix(planeToCameraSpace);
     }
 }

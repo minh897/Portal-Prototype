@@ -20,7 +20,7 @@ public class PortalRenderer : MonoBehaviour
     void LateUpdate()
     {
         HandleCameraPosition();
-        HandleCameraClipping();
+        HandleNearClipPlane();
     }
 
     // Check if the player is near the portal surface
@@ -54,7 +54,7 @@ public class PortalRenderer : MonoBehaviour
     }
 
     // Handle drawing a new near-clip plane using oblique projection matrix
-    private void HandleCameraClipping()
+    private void HandleNearClipPlane()
     {
         if (IsNearPortal())
         {

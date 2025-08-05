@@ -130,7 +130,6 @@ GameObject:
   - component: {fileID: 157382959}
   - component: {fileID: 157382962}
   - component: {fileID: 157382961}
-  - component: {fileID: 157382960}
   m_Layer: 0
   m_Name: Screen_B
   m_TagString: Untagged
@@ -153,28 +152,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1495510639}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!64 &157382960
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 157382958}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &157382961
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -360,7 +337,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!136 &253645405
 CapsuleCollider:
@@ -883,10 +860,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 185d7c8a92ba3bb59b2e1d215ea434a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inPortalCamera: {fileID: 2050905675}
-  outPortalCamera: {fileID: 1300210537}
-  inPortalTransform: {fileID: 157382959}
-  outPortalTransform: {fileID: 489388414}
+  inCamera: {fileID: 2050905675}
+  outCamera: {fileID: 1300210537}
+  inTransform: {fileID: 157382959}
+  outTransform: {fileID: 489388414}
 --- !u!1 &469276173
 GameObject:
   m_ObjectHideFlags: 0
@@ -984,7 +961,6 @@ GameObject:
   - component: {fileID: 489388414}
   - component: {fileID: 489388417}
   - component: {fileID: 489388416}
-  - component: {fileID: 489388415}
   m_Layer: 0
   m_Name: Screen_A
   m_TagString: Untagged
@@ -1007,28 +983,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1635059447}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!64 &489388415
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 489388413}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &489388416
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1352,10 +1306,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 185d7c8a92ba3bb59b2e1d215ea434a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inPortalCamera: {fileID: 1300210537}
-  outPortalCamera: {fileID: 2050905675}
-  inPortalTransform: {fileID: 489388414}
-  outPortalTransform: {fileID: 157382959}
+  inCamera: {fileID: 1300210537}
+  outCamera: {fileID: 2050905675}
+  inTransform: {fileID: 489388414}
+  outTransform: {fileID: 157382959}
 --- !u!1 &1041266018
 GameObject:
   m_ObjectHideFlags: 0
@@ -1803,13 +1757,13 @@ Transform:
   m_GameObject: {fileID: 1495510638}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9.5, y: 4.51, z: -7.18}
+  m_LocalPosition: {x: 9.5, y: 4.03, z: -5.18}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 446972560}
   - {fileID: 157382959}
   - {fileID: 2050905672}
-  - {fileID: 446972560}
   - {fileID: 1352966451}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2157,9 +2111,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1002540954}
   - {fileID: 489388414}
   - {fileID: 1300210534}
-  - {fileID: 1002540954}
   - {fileID: 949955566}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}

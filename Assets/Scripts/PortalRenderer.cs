@@ -1,14 +1,14 @@
 using UnityEngine;
 
-public class PortalRender : MonoBehaviour
+public class PortalRenderer : MonoBehaviour
 {
     [Header("Portal Cameras")]
-    [SerializeField] private Camera inPortalCamera;
-    [SerializeField] private Camera outPortalCamera;
+    [SerializeField] private Camera inCamera;
+    [SerializeField] private Camera outCamera;
 
     [Header("Portal Renders")]
-    [SerializeField] private Transform inPortalTransform;
-    [SerializeField] private Transform outPortalTransform;
+    [SerializeField] private Transform inTransform;
+    [SerializeField] private Transform outTransform;
 
     private Camera playerCam;
 
@@ -27,17 +27,17 @@ public class PortalRender : MonoBehaviour
     {
         // Convert the world space position of the player camera into local position of the in portal 
         // then mirror the position so the other portal camera is place behind of the other portal
-        Vector3 relativePos = inPortalTransform.InverseTransformPoint(playerCam.transform.position);
+        Vector3 relativePos = inTransform.InverseTransformPoint(playerCam.transform.position);
         Vector3 mirrorPos = new(-relativePos.x, relativePos.y, -relativePos.z);
 
         // Convert the player camera’s rotation from world space into the in portal's local space
         // then flip the portal camera 180 degrees around the Y axis
-        Quaternion relativeRot = Quaternion.Inverse(inPortalTransform.rotation) * playerCam.transform.rotation;
+        Quaternion relativeRot = Quaternion.Inverse(inTransform.rotation) * playerCam.transform.rotation;
         Quaternion mirrorRot = Quaternion.AngleAxis(180f, Vector3.up);
 
         // Apply the flip rotation to the relative rotation
         relativeRot = mirrorRot * relativeRot;
 
-        outPortalCamera.transform.SetPositionAndRotation(outPortalTransform.TransformPoint(mirrorPos), outPortalTransform.rotation * relativeRot);
+        outCamera.transform.SetPositionAndRotation(outTransform.TransformPoint(mirrorPos), outTransform.rotation * relativeRot);
     }
 }

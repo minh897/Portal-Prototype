@@ -2,18 +2,25 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    // === Serialized Fields (Editable in Inspector) ===
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float rotateSpeed = 5f;
     [SerializeField] private float mouseSens = 10f;
 
+    // === Input State ===
     private bool isInputActive = false;
     private float mouseVerticalInput;
     private float mouseHorizontalInput;
+
+    // === References ===
     private Camera playerCam;
     private Rigidbody rb;
-    private Vector3 currentPosition;
-    private Vector3 previousPosition;
 
+    // === Movement Tracking ===
+    private Vector3 tempPosition;
+    public Vector3 PreviousPosition { get; private set; }
+
+    // === Vertical Rotation Limits ===
     private const float maxVerticalAngle = 90f;
     private const float minVerticalAngle = -90f;
 
@@ -25,8 +32,8 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        currentPosition = playerCam.transform.position;
-        previousPosition = currentPosition;
+        tempPosition = playerCam.transform.position;
+        PreviousPosition = tempPosition;
     }
 
     void Update()
@@ -39,12 +46,6 @@ public class PlayerController : MonoBehaviour
     {
         HandlePlayerMovement();
     }
-
-    #region PUBLIC METHODS
-
-    public Vector3 GetPreviousPos() => previousPosition;
-
-    #endregion
 
     private Vector3 GetMoveInput()
     {
@@ -111,7 +112,7 @@ public class PlayerController : MonoBehaviour
         rb.MovePosition(transform.position + targetPosition * Time.fixedDeltaTime);
 
         // Update player camera current position in world space
-        previousPosition = currentPosition;
-        currentPosition = playerCam.transform.position;
+        PreviousPosition = tempPosition;
+        tempPosition = playerCam.transform.position;
     }
 }

@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class PortalController : MonoBehaviour
 {
+    // === Serialized Fields (Editable in Inspector) ===
     [Header("Portal Cameras")]
     [SerializeField] private Camera outCamera;
 
@@ -10,17 +11,21 @@ public class PortalController : MonoBehaviour
     [SerializeField] private Transform inTransform;
     [SerializeField] private Transform outTransform;
 
+    // === Check Flags ===
     private bool isNearPortal = false;
     private bool isWithinThreshold = false;
 
+    // === Distance From Portal ===
     private float sideDst;
     private float heightDst;
     private float currentFrontDst;
     private float previousFrontDst;
 
+    // === References ===
     private Camera playerCam;
     private PlayerController playerController;
 
+    // === Portal Threshold ===
     private const float depthThreshold = 0.001f;
     private const float widthThreshold = 0.6f;
     private const float heightThreshold = 1.2f;
@@ -132,7 +137,7 @@ public class PortalController : MonoBehaviour
     {
         // Track the current and previous player position relative to inTransform in world space
         Vector3 posToCurrent = playerCam.transform.position - inTransform.position;
-        Vector3 posToPrevious = playerController.GetPreviousPos() - inTransform.position;
+        Vector3 posToPrevious = playerController.PreviousPosition - inTransform.position;
 
         // Calculate the player's distance along the normalized portal surface threshold
         currentFrontDst = Vector3.Dot(inTransform.forward, posToCurrent);

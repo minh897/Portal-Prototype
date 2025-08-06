@@ -12,7 +12,6 @@ public class PortalController : MonoBehaviour
     [SerializeField] private Transform outTransform;
 
     // === Check Flags ===
-    private bool isNearPortal = false;
     private bool isWithinThreshold = false;
 
     // === Distance From Portal ===
@@ -51,22 +50,6 @@ public class PortalController : MonoBehaviour
     {
         UpdateCameraView();
         UpdateNearClipPlane();
-    }
-
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            isNearPortal = true;
-        }
-    }
-
-    void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            isNearPortal = false;
-        }
     }
 
     #region PRIVATE METHODS
@@ -110,10 +93,19 @@ public class PortalController : MonoBehaviour
         mirrorRot = Quaternion.AngleAxis(180f, Vector3.up) * relativeRot;
     }
 
+    // Check the player's distance along portal forward direction
+    // Return true if the player has crossed the desired distance
+    private bool IsNearPortal()
+    {
+        Vector3 posToPlayer = playerCam.transform.position - inTransform.position;
+        float frontDistance = Vector3.Dot(posToPlayer, inTransform.forward);
+        return Mathf.Abs(frontDistance) < 0.6f;
+    }
+
     // Handle drawing a new near-clip plane using oblique projection matrix
     private void UpdateNearClipPlane()
     {
-        if (isNearPortal)
+        if (IsNearPortal())
         {
             outCamera.ResetProjectionMatrix();
             return;

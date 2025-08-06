@@ -14,6 +14,7 @@ This is just a small experimental project that I've done in my free time. The go
 - **Oblique Projection:** The portal camera uses a custom oblique matrix to align its near clip plane with the portal surface, preventing visual clipping when close to the portal.
 
 ## Limitations && Future Improvements
+Below are some of the limitations and possible improvements that I can think of on top of my head:
 
 - **Player movement stutters occasionally.**  
   The current movement system can feel rough, especially during tight turns or portal transitions.  

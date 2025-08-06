@@ -39,10 +39,7 @@ public class PortalController : MonoBehaviour
         isWithinThreshold = CheckForPortalCrossing();
 
         if (isWithinThreshold)
-        {
-            Debug.Log("Teleported!");
             TeleportObject(playerController.transform);
-        }
     }
 
     void LateUpdate()

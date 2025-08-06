@@ -1,4 +1,3 @@
-using System.ComponentModel.Design;
 using UnityEngine;
 
 public class PortalController : MonoBehaviour
@@ -105,6 +104,9 @@ public class PortalController : MonoBehaviour
     // Handle drawing a new near-clip plane using oblique projection matrix
     private void UpdateNearClipPlane()
     {
+        // Reset camera projection matrix when the player is near the portal
+        // Prevent out camera near-clip plane intersect with the updated near-clip plane
+        // creating this "smudging" effect that look like the RenderTexture has a burn-in
         if (IsNearPortal())
         {
             outCamera.ResetProjectionMatrix();
